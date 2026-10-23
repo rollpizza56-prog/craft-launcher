@@ -192,7 +192,8 @@ fn wgpu_options() -> eframe::WgpuConfiguration {
         if let Some(backends) = Backends::from_env() {
             setup.instance_descriptor.backends = backends;
         } else {
-            setup.instance_descriptor.backends = Backends::DX12 | Backends::GL;
+            // Local patch: Vulkan only (was DX12 | GL). WGPU_BACKEND above still overrides it.
+            setup.instance_descriptor.backends = Backends::VULKAN;
             let integrated = setup.power_preference == PowerPreference::LowPower;
             setup.native_adapter_selector = Some(Arc::new(move |adapters, surface| {
                 adapters
