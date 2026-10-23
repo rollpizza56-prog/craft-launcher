@@ -304,6 +304,11 @@ pub fn launch_binary(exe: &Path, args: &[&str]) -> Result<(), String> {
         command(exe)
     };
     cmd.args(args);
+        // Local patch: apps started from the launcher draw with Vulkan unless the user already set it.
+    #[cfg(windows)]
+    if std::env::var_os("WGPU_BACKEND").is_none() {
+        cmd.env("WGPU_BACKEND", "vulkan");
+    }
     if let Some(dir) = exe.parent() {
         cmd.current_dir(dir);
     }
